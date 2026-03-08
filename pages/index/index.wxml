@@ -1,0 +1,78 @@
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <text class="title">🍽️ 吃什么好</text>
+    <text class="subtitle">输入预算和人数，为你推荐合适的餐厅</text>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-section">
+    <!-- 预算输入 -->
+    <view class="input-group">
+      <text class="label">预算（元）</text>
+      <input
+        class="input"
+        type="number"
+        placeholder="请输入预算（元）"
+        value="{{budget}}"
+        bindinput="onBudgetInput"
+      />
+    </view>
+
+    <!-- 人数选择 -->
+    <view class="input-group">
+      <text class="label">就餐人数</text>
+      <picker
+        mode="selector"
+        range="{{peopleRange}}"
+        value="{{peopleIndex}}"
+        bindchange="onPeopleChange"
+      >
+        <view class="picker-value">
+          <text>{{peopleCount}} 人</text>
+          <text class="arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 获取推荐按钮 -->
+    <button class="btn-recommend" bindtap="getRecommendation" loading="{{loading}}" disabled="{{loading}}">
+      获取推荐
+    </button>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-section" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">正在为你寻找美食...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view class="error-section" wx:if="{{errorMsg && !loading}}">
+    <text class="error-icon">😕</text>
+    <text class="error-text">{{errorMsg}}</text>
+  </view>
+
+  <!-- 结果展示 -->
+  <view class="result-section" wx:if="{{showResult && restaurants.length > 0 && !loading}}">
+    <text class="result-title">为你推荐以下餐厅</text>
+    <view class="restaurant-list">
+      <view class="restaurant-card" wx:for="{{restaurants}}" wx:key="id">
+        <view class="card-header">
+          <text class="restaurant-name">{{item.name}}</text>
+          <text class="restaurant-price">¥{{item.avgPrice}}/人</text>
+        </view>
+        <view class="card-body">
+          <text class="restaurant-reason">{{item.reason}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空结果提示 -->
+  <view class="empty-section" wx:if="{{showResult && restaurants.length === 0 && !errorMsg && !loading}}">
+    <text class="empty-icon">🍜</text>
+    <text class="empty-text">暂无符合条件的餐厅推荐</text>
+    <text class="empty-hint">试试调高预算或减少人数</text>
+  </view>
+</view>
